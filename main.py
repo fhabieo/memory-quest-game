@@ -1,108 +1,114 @@
-import tkinter as tk
-from tkinter import messagebox
-import time
+# =====================
+# KETUA
+# =====================
 
-class MemoryGame:
+def __init__(self, root: tk.Tk):
+    self.root = root
+    self.root.title("✦ Memory Quest ✦")
+    self.root.configure(bg=BG)
+    self.root.resizable(False, False)
 
-    def __init__(self, root):
-        self.root = root
-        self.root.title("✦ Memory Quest ✦")
+    self._build_ui()
+    self._new_game()
 
-        # dari Orang 5
-        self.player_name = self.ask_player_name()
-        self.choose_difficulty()
 
-        # dari Orang 2
-        self._build_ui()
+def _new_game(self):
+    pairs = random.sample(EMOJIS, TOTAL // 2)
+    self.values = pairs * 2
+    random.shuffle(self.values)
 
-        # dari Orang 3
-        self._new_game()
+    self.flipped   = [False] * TOTAL
+    self.matched   = [False] * TOTAL
+    self.selected  = []
 
-    # =====================
-    # TIMER
-    # =====================
+    self.moves = 0
+    self.pairs_found = 0
 
-    def _tick(self):
-        if not self.game_over:
-            self.elapsed = int(
-                time.time() - self.start_time
-            )
+    self.locked = False
 
-            self.lbl_timer.config(
-                text=f"⏱ {self.elapsed}s"
-            )
+    self.start_time = time.time()
+    self.elapsed = 0
+    self.game_over = False
 
-            self.root.after(
-                500,
-                self._tick
-            )
+    self._update_labels()
+    self._draw_all()
+    self._tick()
 
-    # =====================
-    # UPDATE LABEL
-    # =====================
 
-    def _update_labels(self):
+def _win(self):
+    self.game_over = True
 
-        self.lbl_moves.config(
-            text=f"Moves: {self.moves}"
+    self.elapsed = int(
+        time.time() - self.start_time
+    )
+
+    rating = (
+        "⭐⭐⭐"
+        if self.moves <= 18
+        else (
+            "⭐⭐"
+            if self.moves <= 26
+            else "⭐"
         )
+    )
 
-        self.lbl_pairs.config(
-            text=f"Pairs: {self.pairs_found}/{self.total//2}"
+    msg = (
+        f"🎉  Selamat!  🎉\n\n"
+        f"Kamu menyelesaikan game dalam\n"
+        f"{self.moves} gerakan  ·  "
+        f"{self.elapsed} detik\n\n"
+        f"Rating: {rating}"
+    )
+
+    self.root.after(
+        400,
+        lambda: messagebox.showinfo(
+            "Victory!",
+            msg
         )
+    )
 
-    # =====================
-    # WIN CONDITION
-    # =====================
 
-    def _win(self):
+def _tick(self):
 
-        self.game_over = True
+    if not self.game_over:
 
         self.elapsed = int(
-            time.time() - self.start_time
+            time.time() -
+            self.start_time
         )
 
-        # dari Orang 4
-        self.save_score()
-
-        if self.moves <= 18:
-            rating = "⭐⭐⭐"
-
-        elif self.moves <= 26:
-            rating = "⭐⭐"
-
-        else:
-            rating = "⭐"
-
-        messagebox.showinfo(
-            "Victory!",
-            f"🎉 Selamat {self.player_name}!\n\n"
-            f"Waktu : {self.elapsed} detik\n"
-            f"Moves : {self.moves}\n"
-            f"Rating : {rating}"
+        self.lbl_timer.config(
+            text=f"⏱ {self.elapsed}s"
         )
 
-    # =====================
-    # TESTING
-    # =====================
+        self.root.after(
+            500,
+            self._tick
+        )
 
-    def reset_game(self):
 
-        self.moves = 0
-        self.elapsed = 0
-        self.game_over = False
+def _update_labels(self):
 
-        self._new_game()
+    self.lbl_moves.config(
+        text=f"Moves: {self.moves}"
+    )
 
-# =========================
+    self.lbl_pairs.config(
+        text=f"Pairs: "
+             f"{self.pairs_found}/"
+             f"{TOTAL // 2}"
+    )
+
+
+# =====================
 # ENTRY POINT
-# =========================
+# =====================
 
 if __name__ == "__main__":
 
     root = tk.Tk()
 
-    game = MemoryGame(root)
+    MemoryGame(root)
 
     root.mainloop()
