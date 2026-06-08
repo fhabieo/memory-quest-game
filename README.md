@@ -11,7 +11,7 @@ Game mencocokkan kartu berbasis Python dan Tkinter.
 
 ## Anggota Kelompok
 - Fhabieo
-- Anggota 2
-- Anggota 3
-- Anggota 4
-- Anggota 5
+- Fatih
+- Rizki
+- Zachra
+- Raya
